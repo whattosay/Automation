@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IT Engineering Automation</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <h1>Dporwal Automation</h1>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <form method="post" action="{% url 'get_response' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="user_name">User Name</label>
+                        {{ user_form.name }}
+                    </div>
+                    <div class="form-group">
+                        <label for="app_name">App Name</label>
+                        {{ app_form.name }}
+                    </div>
+                    <div class="form-group">
+                        <label for="group_name">Group Name</label>
+                        {{ group_form.name }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <div class="response-container">
+                    <textarea id="response-text" class="form-control" rows="10" readonly></textarea>
+                    <button id="copy-response" class="btn btn-secondary">
+                        <i class="fas fa-book"></i>
+                    </button>
+                </div>
+            </div>
+            </div>
+            </div>
+            <!-- Theme toggle button -->
+            <button id="theme-toggle" class="btn btn-secondary"><i class="fas fa-moon"></i></button>
+            <!-- Bootstrap JS and dependencies -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+            <script src="{% static 'js/theme-toggle.js' %}"></script>
+            <script>
+                $(document).ready(function() {
+                    $('#data-form').on('submit', function(event) {
+                        event.preventDefault();
+                        $.ajax({
+                            url: "{% url 'get_response' %}",
+                            type: "POST",
+                            data: $(this).serialize(),
+                            success: function(response) {
+                                // Directly set the plain text response to the textarea
+                                $('#response-text').val(response);
+                            }
+                        });
+                    });
+            
+                    $('#copy-response').on('click', function() {
+                        var responseText = document.getElementById('response-text');
+                        responseText.select();
+                        document.execCommand('copy');
+                    });
+                });
+            </script>
+    <!-- <script>
+        document.getElementById('copy-response').addEventListener('click', function() {
+            var responseText = document.getElementById('response-text');
+            responseText.select();
+            document.execCommand('copy');
+        });
+    </script> -->
+</body>
+</html>
